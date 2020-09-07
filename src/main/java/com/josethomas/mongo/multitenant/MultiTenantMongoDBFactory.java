@@ -20,16 +20,14 @@ public class MultiTenantMongoDBFactory extends SimpleMongoClientDatabaseFactory 
 
     @Autowired
     CachedMongoClients cachedMongoClients;
+
     public MultiTenantMongoDBFactory(MongoClient mongoClient, String databaseName) {
         super(mongoClient, databaseName);
-        log.info("## MultiTenantMongoDBFactory");
-
     }
 
     protected MongoDatabase doGetMongoDatabase(String dbName) {
         log.info("## doGetMongoDatabase");
         return cachedMongoClients.getMongoDatabaseForCurrentContext();
-        //return getMongoClient().getDatabase(dbName);
     }
 
 

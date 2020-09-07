@@ -35,7 +35,7 @@ public class CachedMongoClients {
 
     Map<String, Tenant> tenantCache;
 
-    //*Intitialize your Multi tenant Here here.
+    //*Initialize tenants Here .
     @PostConstruct
     @Lazy
     public void initTenant() {
@@ -49,7 +49,7 @@ public class CachedMongoClients {
     }
 
     /**
-     * Default Database name
+     * Default Database name , for spring initialization
      *
      * @return
      */
@@ -59,11 +59,10 @@ public class CachedMongoClients {
     }
 
     /**
-     * Default Mongo Connection
+     * Default Mongo Connection for spring initialization
      */
     @Bean
     public MongoClient getMongoClient() {
-        log.info("Default Mongo Connection ");
         MongoCredential credential = MongoCredential.createCredential(userName, databaseName, password.toCharArray());
         MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
                 .applyToClusterSettings(builder ->
@@ -73,9 +72,11 @@ public class CachedMongoClients {
         return mongoClient;
     }
 
-
+    /**This will get called for each DB operations
+     * Resiliency handlers can be added here.
+     * @return MongoDatabase
+     */
     public MongoDatabase getMongoDatabaseForCurrentContext() {
-        log.info(">>>"+TenantProvider.getCurrentDb());
         return tenantCache.get(TenantProvider.getCurrentDb()).getClient().
                 getDatabase(tenantCache.get(TenantProvider.getCurrentDb()).getDatabase());
     }
